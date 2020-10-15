@@ -99,3 +99,7 @@ Looking for more guidance? Full documentation for Gatsby lives [on the website](
 <!-- AUTO-GENERATED-CONTENT:END -->
 
 Test
+
+```sh
+$ npm install netlify-cms-app@2.12.15 gatsby-plugin-netlify-cms@4.3.5
+```
