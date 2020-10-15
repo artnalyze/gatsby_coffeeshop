@@ -102,4 +102,8 @@ Test
 
 ```sh
 $ npm install netlify-cms-app@2.12.15 gatsby-plugin-netlify-cms@4.3.5
+
+$ npm install gatsby-source-filesystem@2.3.14
+
+$ npm install gatsby-transformer-remark@2.8.19
 ```
