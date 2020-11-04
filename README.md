@@ -107,3 +107,147 @@ $ npm install gatsby-source-filesystem@2.3.14
 
 $ npm install gatsby-transformer-remark@2.8.19
 ```
+
+### GraphQL example 
+
+page : 85
+
+```
+{
+  allFile(filter: { name: { eq: "2020-03-06-welcome-to-the-coffee-blog" } })
+    edges {
+      node {
+        extension
+        dir
+        modifiedTime
+      }
+    }
+  }
+}
+```
+
+### Parsing the Markdown data
+
+```
+{
+  allMarkdownRemark {
+    edges {
+      node {
+        html
+      }
+    }
+  }
+}
+```
+
+## Querying and displaying the data
+
+### Creating a blog post component
+
+> src/components/BlogPost.js
+
+```js
+import React from 'react';
+import styles from './BlogPost.module.css';
+
+export default function BlogPost({ title, date, excerpt }) {
+    return (
+        <article className={styles.blog}>
+            <h2>{title}</h2>
+            <h3>{date}</h3>
+            <p>{excerpt}</p>
+        </article>
+    );
+};
+```
+
+> src/components/BlogPost.module.css
+
+```css
+.blog {
+padding: 1rem;
+}
+.blog h2 {
+margin: 0;
+}
+.blog h3 {
+margin: 0;
+font-style: italic;
+}
+```
+
+### Creating a blog list component and querying for data
+
+```js
+import React from 'react';
+import { graphql, useStaticQuery } from 'gatsby';
+import BlogPost from './BlogPost'
+
+export default function BlogList() {
+    const data = useStaticQuery(graphql`
+        {
+            allMarkdownRemark(sort: { fields: frontmatter___date, order: DESC}) {
+                edges {
+                    node {
+                        id
+                        frontmatter {
+                            title
+                            date(formatString: "MMMM D, YYYY")
+                        }
+                        excerpt
+                    }
+                }
+            }
+        }
+    `);
+    return (
+        <div>
+            {data.allMarkdownRemark.edges.map(edges => (
+                <BlogPost
+                    key={edges.node.id}
+                    title={edges.node.frontmatter.title}
+                    date={edges.node.frontmatter.date}
+                    excerpt={edges.node.excerpt}
+                ></BlogPost>   
+            ))}
+        </div>
+    )
+}
+```
+
+### Using the BlogList component
+
+> src/pages/index.js
+
+```js
+import React from "react"
+
+import { graphql, useStaticQuery } from "gatsby"
+
+import BlogList from "../components/BlogList"
+
+import Layout from "../components/Layout"
+
+import styles from "./index.module.css"
+
+export default function IndexPage() {
+  const data = useStaticQuery(graphql`
+    {
+      site {
+        siteMetadata {
+          title
+        }
+      }
+    }
+  `)
+
+  return (
+    <Layout>
+      <div id={styles.hero}>
+        <h1>{data.site.siteMetadata.title}</h1>
+      </div>
+      <BlogList/>
+    </Layout>
+  )
+}
+```
