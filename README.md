@@ -292,3 +292,91 @@ return (
 ## Dynamic Page Creation
 
 ### Gatsby Node APIs
+
+onCreateNode
+createPages
+
+### Adding the slug to the blog post data
+
+> gatsby-node.js
+
+```js
+const { createFilePart } = require("gatsby-source-filesystem")
+
+exports.onCreateNode = function({ node, getNode, actions }) {
+    const { createNodeField } = actions
+
+    if (node.internal.type === "MarkdownRemark") {
+        const slug = createFilePath({ node, getNode })
+        createNodeField({
+            node,
+            name: "slug",
+            value: slug,
+        })
+    }
+}
+
+/*
+{
+    allMarkdownRemark {
+        edges {
+            node {
+                fields {
+                    slug
+                }
+            }
+        }
+    }
+}
+*/
+```
+
+### Dynamically creating the blog post pages
+
+> templates/blog.js
+
+```js
+import React from "react"
+import { graphql } from "gatsby"
+import Layout from "../components/Layout"
+import styles from "./blog.module.css"
+
+export default function BlogTemplate({ data }) {
+  return (
+    <Layout>
+      <div className={styles.blog}>
+        <h1>{data.markdownRemark.frontmatter.title}</h1>
+        <div
+          dangerouslySetInnerHTML={{ __html: data.markdownRemark.html }}
+        ></div>
+      </div>
+    </Layout>
+  )
+}
+
+export const query = grapql`
+    query($slug: String!) {
+        markdownRemark(fields: { slug: { eq: $slug } }) {
+            html
+            frontmatter {
+                title
+            }
+        }
+    }
+`;
+```
+
+> templates/blog.module.css
+
+```css
+.blog {
+    padding: 1rem;
+}
+
+.blog h1 {
+    margin: 0;
+}
+```
+
+### Creating the pages
+
