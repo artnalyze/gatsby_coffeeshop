@@ -5,6 +5,7 @@ body {
     font-family: 'Open Sans', sans-serif;
 }
 
-.thumbnail .bordered {
-    border: 1px solid black;
+.bordered {
+    border: 4px solid black;
+    border-radius: 25px;
 }
