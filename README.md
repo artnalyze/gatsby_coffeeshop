@@ -354,7 +354,7 @@ export default function BlogTemplate({ data }) {
   )
 }
 
-export const query = grapql`
+export const query = graphql`
     query($slug: String!) {
         markdownRemark(fields: { slug: { eq: $slug } }) {
             html
@@ -380,3 +380,129 @@ export const query = grapql`
 
 ### Creating the pages
 
+> gatsby-node.js
+
+```js
+const path = require("path")
+const { createFilePath } = require("gatsby-source-filesystem")
+
+exports.onCreateNode = function({ node, getNode, actions }) {
+    const { createNodeField } = actions
+
+    if (node.internal.type === "MarkdownRemark") {
+        const slug = createFilePath({ node, getNode })
+        createNodeField({
+            node,
+            name: "slug",
+            value: slug,
+        })
+    }
+}
+
+exports.createPages = async function({ graphql, actions }) {
+    const { createPage } = actions
+    const result = await graphql(`
+    query {
+      allMarkdownRemark {
+        edges {
+          node {
+            fields {
+              slug
+            }
+          }
+        }
+      }
+    }
+  `)
+    result.data.allMarkdownRemark.edges.forEach(({ node }) => {
+        createPage({
+            path: node.fields.slug,
+            component: path.resolve("./src/templates/blog.js"),
+            context: {
+                slug: node.fields.slug,
+            },
+        })
+    })
+}
+
+/*
+{
+    allMarkdownRemark {
+        edges {
+            node {
+                fields {
+                    slug
+                }
+            }
+        }
+    }
+}
+*/
+```
+
+### Linking to the dynamically generated pages
+
+> src/components/BlogList.js
+
+```js
+import React from "react"
+import { graphql, useStaticQuery } from "gatsby"
+import BlogPost from "./BlogPost"
+
+export default function BlogList() {
+  const data = useStaticQuery(graphql`
+    {
+      allMarkdownRemark(sort: { fields: frontmatter___date, order: DESC }) {
+        edges {
+          node {
+            id
+            frontmatter {
+              title
+              date(formatString: "MMMM D, YYYY")
+            }
+            fields {
+              slug
+            }
+            excerpt
+          }
+        }
+      }
+    }
+  `)
+  return (
+    <div>
+      {data.allMarkdownRemark.edges.map(edges => (
+        <BlogPost
+          key={edges.node.id}
+          slug={edges.node.fields.slug}
+          title={edges.node.frontmatter.title}
+          date={edges.node.frontmatter.date}
+          excerpt={edges.node.excerpt}
+        ></BlogPost>
+      ))}
+    </div>
+  )
+}
+```
+
+> src/components/BlogPost.js
+
+```js
+import React from "react"
+import { Link } from "gatsby"
+import styles from "./BlogPost.module.css"
+
+export default function BlogPost({ title, date, excerpt, slug }) {
+  return (
+    <article className={styles.blog}>
+      <h2>
+        <Link to={slug}>{title}</Link>
+      </h2>
+      <h3>{date}</h3>
+      <p>{excerpt}</p>
+    </article>
+  )
+}
+```
+
+### The Gatsby Link component
