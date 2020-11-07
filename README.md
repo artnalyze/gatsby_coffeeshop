@@ -110,8 +110,6 @@ $ npm install gatsby-transformer-remark@2.8.19
 
 ### GraphQL example 
 
-page : 85
-
 ```
 {
   allFile(filter: { name: { eq: "2020-03-06-welcome-to-the-coffee-blog" } })
@@ -506,3 +504,53 @@ export default function BlogPost({ title, date, excerpt, slug }) {
 ```
 
 ### The Gatsby Link component
+
+> src/components/Layout.js
+
+```js
+import React from "react"
+import { Link } from "gatsby"
+import styles from "./Layout.module.css"
+
+export default function Layout({ children }) {
+  return (
+    <div>
+      <header id={styles.header}>
+        <div id={styles.inner}>
+          <h1>
+            <Link to="/">Artnalyze Coffee Shop</Link>
+          </h1>
+        </div>
+      </header>
+      <main id={styles.main}>{children}</main>
+    </div>
+  )
+}
+```
+
+> src/components/Layout.module.css
+
+```css
+#header {
+    font-family: 'Oswald', sans-serif;
+    background: url('/coffee.jpg');
+    background-size: cover;
+    color: #FFFFFF;
+}
+
+#header #inner {
+    background: rgba(119, 79, 56, 0.85);
+    padding: 1rem;
+}
+
+#header h1 {
+    margin: 0;
+}
+
+#header h1 a {
+    color: #FFFFFF;
+    text-decoration: none;
+}
+```
+
+## Blog Pagination
