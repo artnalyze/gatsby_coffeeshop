@@ -3,8 +3,7 @@ title: Welcome the Coffee Blog
 date: 2020-10-15T06:07:47.029Z
 ---
 
-
-![Coffee Relation](/img/nathan-dumlao-6vhpy27jdps-unsplash.jpg "Coffee Brand")
+<img src="/img/nathan-dumlao-6vhpy27jdps-unsplash.jpg" class="bordered" width="100%"/>
 
 # Hello!
 
