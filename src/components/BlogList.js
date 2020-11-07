@@ -21,18 +21,19 @@ export default function BlogList() {
         }
       }
     }
-  `)
+  `);
+
   return (
     <div>
-      {data.allMarkdownRemark.edges.map(edges => (
+      {data.allMarkdownRemark.edges.map(edge => (
         <BlogPost
-          key={edges.node.id}
-          slug={edges.node.fields.slug}
-          title={edges.node.frontmatter.title}
-          date={edges.node.frontmatter.date}
-          excerpt={edges.node.excerpt}
-        ></BlogPost>
+          key={edge.node.id}
+          slug={edge.node.fields.slug}
+          title={edge.node.frontmatter.title}
+          date={edge.node.frontmatter.date}
+          excerpt={edge.node.excerpt}
+        />
       ))}
     </div>
-  )
+  );
 }
