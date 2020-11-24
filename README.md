@@ -1302,6 +1302,7 @@ collections:
                   widget: "string"
                 - label: "Items"
                   label_singular: "Item"
+                  name: "items"
                   widget: "list"
                   fields:
                     - label: "Name"
@@ -1314,5 +1315,41 @@ collections:
                       name: "price"
                       widget: "string"
 
+```
+
+### Adding menu items
+
+add item in real site
+
+### Building the menu page
+
+> src/components/Layout.js
+
+```js
+import React from "react"
+import { Link } from "gatsby"
+import styles from "./Layout.module.css"
+
+export default function Layout({ children }) {
+  return (
+    <div>
+      <header id={styles.header}>
+        <div id={styles.inner}>
+          <h1>
+            <Link to="/">Artnalyze Coffee Shop</Link>
+          </h1>
+          <Link to="/blog">Blog</Link>
+          <Link to="menu">Menu</Link>
+        </div>
+      </header>
+      <main id={styles.main}>{children}</main>
+    </div>
+  )
+}
+```
+
+> src/components/Layout.midule.css
+
+```css
 
 ```
