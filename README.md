@@ -1184,3 +1184,135 @@ module.exports = {
 ```
 
 ### Using the CMS content in the index page
+
+> pages/index.js
+
+```js
+import React from "react"
+
+import { graphql, useStaticQuery } from "gatsby"
+
+import BlogList from "../components/BlogList"
+
+import Layout from "../components/Layout"
+
+import styles from "./index.module.css"
+
+export default function IndexPage() {
+  const data = useStaticQuery(graphql`
+    {
+      site {
+        siteMetadata {
+          title
+        }
+      }
+      markdownRemark(frontmatter: { contentKey: { eq: "indexPage" } }) {
+        frontmatter {
+          tagline
+          heroImage
+        }
+      }
+    }
+  `);
+
+  const tagline = data.markdownRemark.frontmatter.tagline;
+  const heroImage = data.markdownRemark.frontmatter.heroImage;
+
+  return (
+    <Layout>
+      <div 
+        id={styles.hero}
+        style={{ backgroundImage: `url('${heroImage}')`}}>
+        <h1>{tagline}</h1>
+      </div>
+      <BlogList/>
+    </Layout>
+  )
+}
+```
+
+## Creating the coffee menu
+
+> Nested Lists
+
+### Defining the menu page
+
+> static/admin/config.yml
+
+```yaml
+backend:
+  name: git-gateway
+  branch: master
+
+media_folder: static/img
+public_folder: /img
+
+collections:
+  - name: "blog"
+    label: "Blog"
+    folder: "src/blog"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - name: "contentKey"
+        widget: "hidden"
+        default: "blog"
+      - label: "Title"
+        name: "title"
+        widget: "string"
+      - label: "Publish Date"
+        name: "date"
+        widget: "datetime"
+      - label: "Body"
+        name: "body"
+        widget: "markdown"
+  - name: "pages"
+    label: "Pages"
+    files:
+      - file: "src/pageData/index.md"
+        label: "Index Page"
+        name: "index-page"
+        fields:
+          - name: "contentKey"
+            widget: "hidden"
+            default: "indexPage"
+          - label: "Tagline"
+            name: "tagline"
+            widget: "string"
+          - label: "Hero Image"
+            name: "heroImage"
+            widget: "image"
+      - file: "src/pageData/menu.md"
+        label: "Menu"
+        name: "menu"
+        fields:
+          - name: "contentKey"
+            widget: "hidden"
+            default: "menu"
+          - label: "Title"
+            name: "title"
+            widget: "string"
+          - label: "Categories"
+            label_singular: "Category"
+            name: "categories"
+            widget: "list"
+            fields:
+                - label: "Name"
+                  name: "name"
+                  widget: "string"
+                - label: "Items"
+                  label_singular: "Item"
+                  widget: "list"
+                  fields:
+                    - label: "Name"
+                      name: "name"
+                      widget: "string"
+                    - label: "Description"
+                      name: "description"
+                      widget: "text"
+                    - label: "Price"
+                      name: "price"
+                      widget: "string"
+
+
+```
