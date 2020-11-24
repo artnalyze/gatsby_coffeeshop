@@ -60,6 +60,7 @@ collections:
                   widget: "string"
                 - label: "Items"
                   label_singular: "Item"
+                  name: "items"
                   widget: "list"
                   fields:
                     - label: "Name"
