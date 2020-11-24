@@ -1,6 +1,7 @@
 ---
 title: Second Blog Post
 date: 2020-10-15T08:51:54.500Z
+contentKey: blog
 ---
 ### **This is Second Blog Post**
 
