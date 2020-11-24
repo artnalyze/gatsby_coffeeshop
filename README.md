@@ -704,5 +704,112 @@ export const query = graphql`
 > src/components/Layout.js
 
 ```js
+import React from "react"
+import { Link } from "gatsby"
+import styles from "./Layout.module.css"
 
+export default function Layout({ children }) {
+  return (
+    <div>
+      <header id={styles.header}>
+        <div id={styles.inner}>
+          <h1>
+            <Link to="/">Artnalyze Coffee Shop</Link>
+          </h1>
+          <Link to="/blog">Blog</Link>
+        </div>
+      </header>
+      <main id={styles.main}>{children}</main>
+    </div>
+  )
+}
 ```
+
+> /src/components/Layout.module.css
+
+```css
+#header {
+    font-family: 'Oswald', sans-serif;
+    background: url('/coffee.jpg');
+    background-size: cover;
+    color: #FFFFFF;
+}
+
+#header #inner {
+    background: rgba(119, 79, 56, 0.85);
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+}
+
+#header h1 {
+    margin: 0;
+    flex-grow: 1;
+}
+
+#header h1 a {
+    color: #FFFFFF;
+    text-decoration: none;
+}
+
+#header a {
+    color: #FFFFFF;
+    text-decoration: none;
+}
+```
+
+### updating the index page
+
+> src/components/BlogList.js
+
+```js
+import React from "react"
+import { Link, graphql, useStaticQuery } from "gatsby"
+import BlogPost from "./BlogPost"
+
+export default function BlogList() {
+  const data = useStaticQuery(graphql`
+    {
+      allMarkdownRemark(
+        sort: { fields: frontmatter___date, order: DESC }
+        limit: 3
+        ) {
+        edges {
+          node {
+            id
+            frontmatter {
+              title
+              date(formatString: "MMMM D, YYYY")
+            }
+            fields {
+              slug
+            }
+            excerpt
+          }
+        }
+      }
+    }
+  `);
+
+  return (
+    <div>
+      {data.allMarkdownRemark.edges.map(edge => (
+        <BlogPost
+          key={edge.node.id}
+          slug={edge.node.fields.slug}
+          title={edge.node.frontmatter.title}
+          date={edge.node.frontmatter.date}
+          excerpt={edge.node.excerpt}
+        />
+      ))}
+      <div>
+        <Link to="/blog">More ...</Link>
+      </div>
+    </div>
+  );
+}
+```
+
+## Adding More Content
+
+### The contentKey field
