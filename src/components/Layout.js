@@ -10,6 +10,7 @@ export default function Layout({ children }) {
           <h1>
             <Link to="/">Artnalyze Coffee Shop</Link>
           </h1>
+          <Link to="/blog">Blog</Link>
         </div>
       </header>
       <main id={styles.main}>{children}</main>

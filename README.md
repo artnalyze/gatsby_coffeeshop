@@ -698,3 +698,11 @@ export const query = graphql`
     }
 `;
 ```
+
+### Adding a link to the new blog list page
+
+> src/components/Layout.js
+
+```js
+
+```
