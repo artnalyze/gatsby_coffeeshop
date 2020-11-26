@@ -1536,3 +1536,5 @@ categories:
         price: $1.49
 ---
 ```
+
+## Working with Images
