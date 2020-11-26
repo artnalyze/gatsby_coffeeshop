@@ -1351,5 +1351,188 @@ export default function Layout({ children }) {
 > src/components/Layout.midule.css
 
 ```css
+#header {
+    font-family: 'Oswald', sans-serif;
+    background: url('/coffee.jpg');
+    background-size: cover;
+    color: #FFFFFF;
+}
 
+#header #inner {
+    background: rgba(119, 79, 56, 0.85);
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+}
+
+#header h1 {
+    margin: 0;
+    flex-grow: 1;
+}
+
+#header h1 a {
+    color: #FFFFFF;
+    text-decoration: none;
+}
+
+#header a {
+    color: #FFFFFF;
+    text-decoration: none;
+    margin: 0.5rem;
+}
+```
+
+> src/components/MenuCategory.js
+
+```js
+import React from 'react';
+import styles from './MenuCategory.module.css';
+
+export default function MenuCategory({ category }) {
+    return ( 
+        <div className={styles.category}>
+            <h2>{category.name}</h2>
+            <ul>
+                {category.items.map(item => (
+                    <li key={item.name}>
+                        <div className={styles.name}>{item.name}</div>
+                        <div className={styles.description}>{item.description}</div>
+                        <div>{item.price}</div>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    )
+}
+```
+
+> src/components/MenuCategory.module.css
+
+```css
+.category {
+    margin: 1rem 2rem;
+    width: 15rem;
+}
+
+.category h2 {
+    margin: 0;
+    margin-bottom: 1px solid #774f38;
+}
+
+.category ul {
+    padding: 0;
+}
+
+.category li {
+    list-style-type: none;
+    display: flex;
+    flex-direction: column;
+    margin: 1rem;
+}
+
+.name {
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.description {
+    font-style: italic;
+}
+```
+
+> src/pages/menu.js
+
+```js
+import React from 'react';
+import Layout from '../components/Layout';
+import MenuCategory from '../components/MenuCategory';
+import { grapql, useStaticQuery } from 'gatsby';
+import styles from './menu.module.css';
+
+export default function Menu(){
+    const data = useStaticQuery(graphql`
+    {
+        markdownRemark(frontmatter: { contentKey: { eq: "menu" } }) {
+            frontmatter {
+                title
+                categories {
+                    name
+                    items {
+                        name
+                        description
+                        price
+                    }
+                }
+            }
+        }
+     }
+    `);
+
+    return (
+        <Layout>
+            <div id={styles.main}>
+                <h1>{data.markdownRemark.frontmatter.title}</h1>
+                <div id={styles.menu}>
+                    {data.markdownRemark.frontmatter.categories.map(category => (
+                        <MenuCategory
+                         key={category.name}
+                         category={category}
+                        />
+                    ))}
+                </div>
+            </div>
+        </Layout>
+    )
+}
+```
+
+> src/pages/menu.module.css
+
+```css
+#main {
+    padding: 1rem;
+}
+
+#main h1 {
+    margin: 0;
+}
+
+#menu {
+    display: flex;
+}
+```
+
+> src/pages/menu.md
+
+```md
+---
+title: Coffee and Bakery Menu
+contentKey: menu
+categories:
+  - name: Iced Drinks
+    items:
+      - name: Iced Coffee
+        description: Fresh brewed and served over ice
+        price: $2.49
+      - name: Iced Latte
+        description: Espresso and chilled milk poured over ice
+        price: $3.49
+      - name: Iced Tea
+        description: Fresh brewed black tea leaves
+        price: $2.25
+      - name: Iced Mocha
+        description: Expresso and mocha sauce, milk and ice, with whipped cream
+        price: $3.49
+  - name: Hot Drinks
+    items:
+      - name: Coffee
+        description: Fresh brewed Colombian coffee
+        price: $1.99
+      - name: Cappuccinoa
+        description: Expresso with frothed milk
+        price: $2.49
+      - name: Hot Cocoa
+        description: Steamed milk  with chocolate syrup
+        price: $1.49
+---
 ```
