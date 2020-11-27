@@ -15,6 +15,7 @@ export default function Layout({ children }) {
         </div>
       </header>
       <main id={styles.main}>{children}</main>
+      <footer>power by gatsby</footer>
     </div>
   )
 }
