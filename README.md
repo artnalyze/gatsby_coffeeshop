@@ -1756,3 +1756,85 @@ export default function IndexPage() {
 }
 ```
 
+
+## Fixing the header background
+
+moving the image
+
+> static/coffee.jpg >> static/img/coffee.jpg
+
+## Modifying the Layout component to use a static query
+
+> src/components/Layout.js
+
+```js
+import React from "react"
+import { Link,graphql, useStaticQuery } from "gatsby"
+import BackgroundImage from 'gatsby-background-image'
+import styles from "./Layout.module.css"
+
+export default function Layout({ children }) {
+  const data = useStaticQuery(graphql`
+  {
+    file(relativePath: { eq: "coffee.jpg" }) {
+      childImageSharp {
+        fluid {
+          ...GatsbyImageSharpFluid
+        }
+      }
+    }
+  }
+  `);
+  
+  return (
+    <div>
+      <BackgroundImage id={styles.header}
+      fluid={data.file.childImageSharp.fluid}>
+        <div id={styles.inner}>
+          <h1>
+            <Link to="/">Artnalyze Coffee Shop</Link>
+          </h1>
+          <Link to="/blog">Blog</Link>
+          <Link to="/menu">Menu</Link>
+        </div>
+      </BackgroundImage>
+      <main id={styles.main}>{children}</main>
+      <footer>power by gatsby</footer>
+    </div>
+  )
+}
+```
+
+> src/components/Layout.module.css
+
+```css
+#header {
+    font-family: 'Oswald', sans-serif;
+    /* background: url('/coffee.jpg'); */
+    background-size: cover;
+    color: #FFFFFF;
+}
+
+#header #inner {
+    background: rgba(119, 79, 56, 0.85);
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+}
+
+#header h1 {
+    margin: 0;
+    flex-grow: 1;
+}
+
+#header h1 a {
+    color: #FFFFFF;
+    text-decoration: none;
+}
+
+#header a {
+    color: #FFFFFF;
+    text-decoration: none;
+    margin: 0.5rem;
+}
+```
