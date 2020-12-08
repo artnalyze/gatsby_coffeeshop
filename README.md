@@ -2044,3 +2044,71 @@ export default function Menu({ data }) {
     display: flex;
 }
 ```
+
+> src/pages/menu.js
+
+```js
+import React from 'react';
+import Layout from '../components/Layout';
+import Menu from '../components/Menu';
+import MenuCategory from '../components/MenuCategory';
+import { graphql } from 'gatsby';
+import styles from './menu.module.css';
+
+export default function MenuPage({ data }){
+
+    return (
+        <Layout>
+           <Menu data={data}/>
+        </Layout>
+    );
+
+    export const query = graphql`
+    {
+        markdownRemark(frontmatter: { contentKey: { eq: "menu" } }){
+            frontmatter {
+                title
+                categories {
+                    name
+                    items {
+                        name
+                        description
+                        price
+                    }
+                }
+            }
+        }
+    }
+    `
+}
+```
+
+### Updating the preview component
+
+> src/cms/MenuPreview.js
+
+```js
+import React from 'react'
+import '../global.css';
+import Menu from '../components/Menu';
+//import MenuPage from '../pages/menu'
+
+export default function MenuPreview({ entry }) {
+    const menu = entry.getIn(['data']).toJS();
+
+    const data = {
+        markdownRemark: {
+            frontmatter: {
+                ...menu
+            }
+        }
+    }
+
+    return <Menu data={data}/>
+}
+```
+
+> src/components/MenuCategory.js
+
+```
+```
