@@ -2110,5 +2110,51 @@ export default function MenuPreview({ entry }) {
 
 > src/components/MenuCategory.js
 
+```js
+import React from 'react';
+import styles from './MenuCategory.module.css';
+
+export default function MenuCategory({ category }) {
+    return ( 
+        <div className={styles.category}>
+            <h2>{category.name}</h2>
+            <ul>
+                {category.items && category.items.map(item => (
+                    <li key={item.name}>
+                        <div className={styles.name}>{item.name}</div>
+                        <div className={styles.description}>{item.description}</div>
+                        <div>{item.price}</div>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    )
+}
 ```
+
+## The Editorial Workflow
+
+### Enabling the editorial workflow
+
+> static/admin/config.yml
+
+```yml
+backend:
+  name: git-gateway
+  branch: master
+
+media_folder: static/img
+public_folder: /img
+publish_mode: editorial_workflow
+
 ```
+
+## Adding some new content
+
+add Bakery > item
+
+## Viewing the pull request
+
+go to github
+
+## Viewing the preview
