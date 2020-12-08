@@ -1,27 +1,28 @@
 import React from 'react';
 import Layout from '../components/Layout';
+import Menu from '../components/Menu';
 import MenuCategory from '../components/MenuCategory';
-import { graphql, useStaticQuery } from 'gatsby';
+import { graphql } from 'gatsby';
 import styles from './menu.module.css';
 
-export default function Menu(){
-    const data = useStaticQuery(graphql`
-    {
-        markdownRemark(frontmatter: { contentKey: { eq: "menu" } }) {
-            frontmatter {
-                title
-                categories {
-                    name
-                    items {
-                        name
-                        description
-                        price
-                    }
-                }
-            }
-        }
-     }
-    `);
+export default function Menu({ data }){
+    // const data = useStaticQuery(graphql`
+    // {
+    //     markdownRemark(frontmatter: { contentKey: { eq: "menu" } }) {
+    //         frontmatter {
+    //             title
+    //             categories {
+    //                 name
+    //                 items {
+    //                     name
+    //                     description
+    //                     price
+    //                 }
+    //             }
+    //         }
+    //     }
+    //  }
+    // `);
 
     return (
         <Layout>
@@ -37,7 +38,25 @@ export default function Menu(){
                 </div>
             </div>
         </Layout>
-    )
+    );
+
+    export const query = graphql`
+    {
+        markdownRemark(frontmatter: { contentKey: { eq: "menu" } }){
+            frontmatter {
+                title
+                categories {
+                    name
+                    items {
+                        name
+                        description
+                        price
+                    }
+                }
+            }
+        }
+    }
+    `
 }
 
 

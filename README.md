@@ -1838,3 +1838,209 @@ export default function Layout({ children }) {
     margin: 0.5rem;
 }
 ```
+
+## Customizing Netlify CMS
+
+### updateing the plugin configuration
+
+> gatsby-config.js
+
+```js
+module.exports = {
+    siteMetadata: {
+        title: "The Coffee Blog",
+    },
+    plugins: [
+        {
+            resolve:  "gatsby-plugin-netlify-cms",
+            options: {
+                modulePath: `${__dirname}/src/cms/cms.js`
+            }
+        },
+        {
+            resolve: "gatsby-source-filesystem",
+            options: {
+                name: "images",
+                path: "static/img",
+            },
+        },
+        {
+            resolve: "gatsby-source-filesystem",
+            options: {
+                name: "blog",
+                path: "src/blog",
+            },
+        },
+        {
+            resolve: "gatsby-source-filesystem",
+            options: {
+                name: "pageData",
+                path: "src/pageData",
+            },
+        },
+        {
+            resolve: "gatsby-transformer-remark",
+            options: {
+               plugins: [
+                   "gatsby-remark-relative-images",
+                   "gatsby-remark-images"
+               ]
+            },
+        },
+        "gatsby-plugin-sharp",
+        "gatsby-transformer-sharp"
+    ],
+}
+```
+
+### Adding a custom menu preview
+
+Add directory
+
+> src/cms
+
+Add file 
+
+> src/cms/cms.js
+
+### Refactoring the menu page
+
+> src/pages/menu.js
+
+```js
+import React from 'react';
+import Layout from '../components/Layout';
+import MenuCategory from '../components/MenuCategory';
+import { graphql } from 'gatsby';
+import styles from './menu.module.css';
+
+export default function Menu({ data }){
+    // const data = useStaticQuery(graphql`
+    // {
+    //     markdownRemark(frontmatter: { contentKey: { eq: "menu" } }) {
+    //         frontmatter {
+    //             title
+    //             categories {
+    //                 name
+    //                 items {
+    //                     name
+    //                     description
+    //                     price
+    //                 }
+    //             }
+    //         }
+    //     }
+    //  }
+    // `);
+
+    return (
+        <Layout>
+            <div id={styles.main}>
+                <h1>{data.markdownRemark.frontmatter.title}</h1>
+                <div id={styles.menu}>
+                    {data.markdownRemark.frontmatter.categories.map(category => (
+                        <MenuCategory
+                         key={category.name}
+                         category={category}
+                        />
+                    ))}
+                </div>
+            </div>
+        </Layout>
+    );
+
+    export const query = graphql`
+    {
+        markdownRemark(frontmatter: { contentKey: { eq: "menu" } }){
+            frontmatter {
+                title
+                categories {
+                    name
+                    items {
+                        name
+                        description
+                        price
+                    }
+                }
+            }
+        }
+    }
+    `
+}
+```
+
+## creating the preview component
+
+> src/cms/MenuPreview.js
+
+```js
+import React from 'react'
+import MenuPage from '../pages/menu'
+
+export default function MenuPreview({ entry }) {
+    const menu = entry.getIn(['data']).toJS();
+
+    const data = {
+        markdownRemark: {
+            frontmatter: {
+                ...menu
+            }
+        }
+    }
+
+    return <MenuPage data={data}/>
+}
+```
+
+> src/cms/cms.js
+
+```js
+import CMS from 'netlify-cms-app';
+import MenuPreview from './MenuPreview';
+
+CMS.registerPreviewTemplate('menu', MenuPreview);
+```
+
+### Refactoring the menu page again
+
+create file 
+
+> src/components/Menu.js
+
+```js
+import React from 'react';
+import styles from './Menu.module.css';
+import MenuCategory from './MenuCategory';
+
+export default function Menu({ data }) {
+    return ( 
+        <div id={styles.main}>
+            <h1>{data.markdownRemark.frontmatter.title}</h1>
+            <div id={styles.menu}>
+                {data.markdownRemark.frontmatter.categories.map(category => (
+                    <MenuCategory
+                        key={category.name}
+                        category={category}
+                    ></MenuCategory>
+                ))}
+            </div>
+        </div>
+    );
+}
+```
+
+> src/components/Menu.module.css
+
+```css
+#main {
+    padding: 1rem;
+}
+
+#main h1 {
+    margin: 0;
+}
+
+#menu {
+    display: flex;
+}
+```
