@@ -2158,3 +2158,7 @@ add Bakery > item
 go to github
 
 ## Viewing the preview
+
+check preview
+
+## Updating the status
