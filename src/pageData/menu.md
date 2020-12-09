@@ -30,6 +30,6 @@ categories:
   - name: Bakery
     items:
       - name: Blueberry Muffin
-        description: Made with farm fresh blueberries ........
+        description: Made with farm fresh blueberries ...................................
         price: "3.99"
 ---
